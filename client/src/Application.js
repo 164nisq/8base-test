@@ -48,11 +48,11 @@ class Application extends React.PureComponent {
             </Nav.Plate>
             <ContentPlate>
               <Switch>
+                <ProtectedRoute exact path="/clients/:id" component={ClientDetails} />
                 <ProtectedRoute exact path="/clients" component={Clients} />
-                <ProtectedRoute path="/clients/:id" component={ClientDetails} />
                 <ProtectedRoute exact path="/products" component={Products} />
-                <ProtectedRoute exact path="/orders" component={Orders} />
                 <ProtectedRoute path="/orders/:id" component={OrderDetails} />
+                <ProtectedRoute exact path="/orders" component={Orders} />
                 <Redirect to="/clients" />
               </Switch>
             </ContentPlate>

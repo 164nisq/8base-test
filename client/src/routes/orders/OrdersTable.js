@@ -9,6 +9,7 @@ import * as sharedGraphQL from 'shared/graphql';
 import { OrderCreateDialog } from './OrderCreateDialog';
 import { OrderDeleteDialog } from './OrderDeleteDialog';
 import { product } from 'ramda';
+import { Link as RouterLink } from 'react-router-dom';
 
 const ORDERS_TABLE_COLUMNS = [
   { name: 'client', title: 'Client', sortEnable: true },
@@ -16,7 +17,6 @@ const ORDERS_TABLE_COLUMNS = [
   { name: 'deliveryDt', title: 'DeliveryDt', sortEnable: false },
   { name: 'comment', title: 'Comment', sortEnable: false },
   { name: 'status', title: 'Status' },
-  { name: 'cost', title: 'Cost' },
   { name: 'actions', width: '60px', sortEnable: false },
 ];
 
@@ -33,7 +33,11 @@ class OrdersTable extends React.Component {
 
     switch (column.name) {
       case 'client': {
-        rendered = <Link href={`/orders/${data.id}`}>{R.pathOr('Unititled', ['client', 'firstName'], data)}</Link>;
+        rendered = (
+          <Link tagName={RouterLink} to={`/orders/${data.id}`}>
+            {R.pathOr('Unititled', ['client', 'firstName'], data)}
+          </Link>
+        );
 
         break;
       }
@@ -51,18 +55,6 @@ class OrdersTable extends React.Component {
       }
       case 'status': {
         rendered = R.pathOr('Unititled', ['status'], data);
-        break;
-      }
-      case 'cost': {
-        const orderItems = R.pathOr('Unititled', ['orderItems', 'items'], data);
-        const price = orderItems.reduce((total, currValue) => {
-          if (currValue.product) {
-            return total + Math.floor(currValue.quantity * currValue.product.price);
-          }
-          return 0;
-        }, 0);
-        totalPrice = totalPrice + price;
-        rendered = price;
         break;
       }
       case 'actions': {
@@ -102,7 +94,6 @@ class OrdersTable extends React.Component {
     const total = R.pathOr(null, ['ordersList', 'count'], data);
     const tableData = R.pathOr([], ['ordersList', 'items'], data);
     const finalTableState = R.assocPath(['pagination', 'total'], total, tableState);
-    console.log(data, tableState, total, tableData);
     return (
       <TableBuilder
         columns={ORDERS_TABLE_COLUMNS}

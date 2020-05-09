@@ -13,7 +13,6 @@ class ProductCreateDialog extends React.Component {
   static contextType = ModalContext;
 
   onSubmit = async data => {
-    console.log(data);
     await this.props.productCreate({ variables: { data } });
     this.context.closeModal(PRODUCT_CREATE_DIALOG_ID);
   };

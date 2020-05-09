@@ -12,7 +12,6 @@ class ClientEditDialog extends React.Component {
   static contextType = ModalContext;
 
   createOnSubmit = id => async data => {
-    console.log(data);
     await this.props.clientUpdate({ variables: { data: { ...data, id } } });
 
     this.context.closeModal(CLIENTS_EDIT_DIALOG_ID);

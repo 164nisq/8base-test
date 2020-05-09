@@ -13,7 +13,6 @@ class ProductEditDialog extends React.Component {
   static contextType = ModalContext;
 
   createOnSubmit = id => async data => {
-    console.log(data);
     await this.props.productUpdate({ variables: { data: { ...data, id } } });
     this.context.closeModal(PRODUCT_EDIT_DIALOG_ID);
   };
@@ -59,7 +58,6 @@ class ProductEditDialog extends React.Component {
   );
 
   renderForm = ({ args }) => {
-    console.log(args.initialValues);
     return (
       <Form
         type="UPDATE"

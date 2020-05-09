@@ -90,24 +90,12 @@ export const ORDERS_LIST_QUERY = gql`
       items {
         id
         client {
-          id
           firstName
         }
         address
         deliveryDt
         comment
         status
-        orderItems {
-          items {
-            product {
-              name
-              id
-              price
-            }
-            quantity
-            id
-          }
-        }
       }
       count
     }
@@ -127,13 +115,24 @@ export const ORDERS_PRICE_QUERY = gql`
   }
 `;
 
-export const ORDERS_ITEMS_QUERY = gql`
-  query OrdersList {
-    ordersList {
+export const ORDERS_CLIENTS_QUERY = gql`
+  query ClientsList {
+    clientsList {
       items {
-        client {
-          id
-          firstName
+        id
+        firstName
+      }
+    }
+  }
+`;
+
+export const ORDERS_PRODUCTS_QUERY = gql`
+  query ProductList {
+    orderItemsList {
+      items {
+        id
+        product {
+          name
         }
       }
     }
@@ -144,6 +143,12 @@ export const ORDERS_CREATE_MUTATION = gql`
   mutation OrderCreate($data: OrderCreateInput!) {
     orderCreate(data: $data) {
       id
+      orderItems {
+        items {
+          id
+          quantity
+        }
+      }
     }
   }
 `;

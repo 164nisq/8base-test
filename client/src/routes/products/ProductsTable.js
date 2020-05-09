@@ -61,7 +61,6 @@ class ProductsTable extends React.Component {
                 <Menu>
                   <Menu.Item
                     onClick={() => {
-                      console.log(data);
                       openModal(ProductEditDialog.id, { initialValues: data, id: data.id });
                       closeDropdown();
                     }}
@@ -92,11 +91,9 @@ class ProductsTable extends React.Component {
   };
 
   renderTable = ({ data, loading }) => {
-    console.log(data);
     const { tableState, onChange, openModal } = this.props;
     const total = R.pathOr(null, ['productsList', 'count'], data);
     const tableData = R.pathOr([], ['productsList', 'items'], data);
-    console.log(tableData);
     const finalTableState = R.assocPath(['pagination', 'total'], total, tableState);
     return (
       <TableBuilder

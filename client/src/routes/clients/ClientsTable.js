@@ -3,6 +3,7 @@ import { compose, withStateHandlers } from 'recompose';
 import * as R from 'ramda';
 import { TableBuilder, Dropdown, Icon, Menu, withModal, Link } from '@8base/boost';
 import { Query } from 'react-apollo';
+import { Link as RouterLink } from 'react-router-dom';
 
 import * as sharedGraphQL from 'shared/graphql';
 
@@ -31,7 +32,9 @@ class ClientsTable extends React.Component {
 
     switch (column.name) {
       case 'firstName': {
-        rendered = <Link href={`/clients/${data.id}`} text={R.pathOr('Unititled', ['firstName'], data)} />;
+        rendered = (
+          <Link tagName={RouterLink} to={`/clients/${data.id}`} text={R.pathOr('Unititled', ['firstName'], data)} />
+        );
         break;
       }
       case 'lastName': {

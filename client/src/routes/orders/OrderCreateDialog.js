@@ -1,37 +1,23 @@
 import React from 'react';
-import * as R from 'ramda';
 import { Form, Field } from '@8base/forms';
-import {
-  Dialog,
-  Grid,
-  Button,
-  ModalContext,
-  InputField,
-  DateInputField,
-  SelectField,
-  CheckboxField,
-  Row,
-} from '@8base/boost';
+import { Dialog, Grid, Button, ModalContext, InputField, DateInputField, SelectField } from '@8base/boost';
 import { Query, graphql } from 'react-apollo';
 
 import * as sharedGraphQL from 'shared/graphql';
 import { TOAST_SUCCESS_MESSAGE } from 'shared/constants';
-import { logError } from '@8base/forms/dist/utils';
-import { product } from 'ramda';
 
 const getClientsOptions = (clients = []) => {
-  console.log(clients);
   const testLog = clients.map(item => ({
-    value: item.client.id,
-    label: item.client.firstName,
+    value: item.id,
+    label: item.firstName,
   }));
   return testLog;
 };
 
 const getProductsOptions = (orders = []) => {
   const testLog = orders.map(item => ({
+    label: item.product.name,
     value: item.id,
-    label: item.name,
   }));
   return testLog;
 };
@@ -41,7 +27,6 @@ class OrderCreateDialog extends React.Component {
   static contextType = ModalContext;
 
   onSubmit = async data => {
-    console.log(data);
     await this.props.orderCreate({ variables: { data: { ...data } } });
     this.context.closeModal(ORDER_CREATE_DIALOG_ID);
   };
@@ -50,20 +35,13 @@ class OrderCreateDialog extends React.Component {
     this.context.closeModal(ORDER_CREATE_DIALOG_ID);
   };
 
-  onExtraProductAdd = (e, item) => {
-    e.preventDefault();
-    this.setState(prevState => ({
-      extraProductsArray: [...prevState.extraProductsArray, item],
-    }));
-  };
-
   renderFormContent = ({ handleSubmit, invalid, submitting, pristine }) => (
     <form onSubmit={handleSubmit}>
       <Dialog.Header title="New Order" onClose={this.onClose} />
       <Dialog.Body scrollable>
         <Grid.Layout gap="sm" stretch>
           <Grid.Box>
-            <Query query={sharedGraphQL.ORDERS_ITEMS_QUERY}>
+            <Query query={sharedGraphQL.ORDERS_CLIENTS_QUERY}>
               {({ data, loading }) => {
                 return (
                   <Field
@@ -72,7 +50,7 @@ class OrderCreateDialog extends React.Component {
                     placeholder="Select a client"
                     component={SelectField}
                     loading={loading}
-                    options={loading ? [] : getClientsOptions(data.ordersList.items)}
+                    options={loading ? [] : getClientsOptions(data.clientsList.items)}
                     stretch
                   />
                 );
@@ -89,20 +67,17 @@ class OrderCreateDialog extends React.Component {
             <Field name="comment" label="Comment" type="text" placeholder="Comment" component={InputField} />
           </Grid.Box>
           <Grid.Box>
-            <Query query={sharedGraphQL.PRODUCTS_LIST_QUERY}>
+            <Query query={sharedGraphQL.ORDERS_PRODUCTS_QUERY}>
               {({ data, loading }) => (
-                <>
-                  <Field
-                    name="product"
-                    label="Product"
-                    placeholder="Select a product"
-                    component={SelectField}
-                    loading={loading}
-                    options={loading ? [] : getProductsOptions(data.productsList.items)}
-                    stretch
-                  />
-                  <Field name="quantity" label="Quantity" type="number" placeholder="Quantity" component={InputField} />
-                </>
+                <Field
+                  name="product"
+                  label="Product"
+                  placeholder="Select a product"
+                  component={SelectField}
+                  loading={loading}
+                  options={loading ? [] : getProductsOptions(data.orderItemsList.items)}
+                  stretch
+                />
               )}
             </Query>
           </Grid.Box>
